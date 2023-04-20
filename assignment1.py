@@ -148,8 +148,25 @@ def find_mode(arr: StaticArray) -> (int, int):
 # ------------------- PROBLEM 8 - REMOVE_DUPLICATES -------------------------
 
 def remove_duplicates(arr: StaticArray) -> StaticArray:
-    unique = StaticArray(1)  # orders static array values in nondescending or ascending
-    unique.set(0, arr.get(0))
+    # Create a new StaticArray object to store unique elements
+    unique_arr = StaticArray(arr.length())
+
+    # Handle the first element separately
+    unique_arr.set(0, arr.get(0))
+    unique_index = 1
+
+    # Iterate through the rest of the elements
+    for i in range(1, arr.length()):
+        if arr.get(i) != arr.get(i-1):
+            # Add the element to the unique array if it's different
+            unique_arr.set(unique_index, arr.get(i))
+            unique_index += 1
+
+    # Create a new StaticArray object with only unique elements
+    result_arr = StaticArray(unique_index)
+    for i in range(unique_index):
+        result_arr.set(i, unique_arr.get(i))
+    return result_arr
 
 
 
