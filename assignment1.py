@@ -57,24 +57,37 @@ def reverse(arr: StaticArray) -> None:
 # ------------------- PROBLEM 4 - ROTATE ------------------------------------
 
 def rotate(arr: StaticArray, steps: int) -> StaticArray:
-    set_arr = StaticArray(arr.length())  # function receievs the given paramters of shifting for direction
-    for index in range(arr.length()):  # right = positive and vice versa
-        new_index = (index + steps) % arr.length()
-        set_arr.set(new_index, arr.get(index))
-    return set_arr
+    """
+    Rotate the given StaticArray by a number of steps.
+    Returns a new StaticArray with the rotated elements.
+    """
+    size = arr.length()
+    if steps < 0:
+        steps += size  # convert negative steps to positive
 
-    pass
+    new_arr = StaticArray(size)
+
+    # Copy the elements to the new array
+    for i in range(size):
+        new_arr[(i + steps) % size] = arr[i]
+
+    return new_arr
 
 
 # ------------------- PROBLEM 5 - SA_RANGE ----------------------------------
 
-def sa_range(start: int, end: int) -> StaticArray:  # receives both start and end integers
-    arr = abs(StaticArray(end - start + 1))
-    for index, value in enumerate(range(start, end + 1)):
-        arr.set(index, value)
-    return arr  # returns values of consecutive integers
+def sa_range(start: int, end: int) -> StaticArray:
+    # Calculate the size of the StaticArray
+    size = abs(end - start) + 1
 
-    pass
+    # Create a new StaticArray object
+    arr = StaticArray(size)
+
+    # Set the values of the StaticArray
+    for i in range(size):
+        arr[i] = start + i
+
+    return arr
 
 
 # ------------------- PROBLEM 6 - IS_SORTED ---------------------------------
@@ -122,22 +135,36 @@ def remove_duplicates(arr: StaticArray) -> StaticArray:
 # ------------------- PROBLEM 9 - COUNT_SORT --------------------------------
 
 def count_sort(arr: StaticArray) -> StaticArray:
-    maximum_value = arr.get(0)
-    for index in range(1, arr.length()):  # returns new staic array from given one
-        if arr.get(index) > maximum_value:
-            maximum_value = arr.get(index)
-    count =   (maximum_value + 1) * arr.get(0)
-    for index in range(arr.length()):
-        count[arr.get(index)] += 1
-    for index in range(1, maximum_value + 1):  # sorts in non ascewnding order using count agl
-        count[index] += count[index - 1]
-    sorted_array = StaticArray(arr.length())
-    for index in range(arr.length() - 1, -1, -1):
-        sorted_array.set(count[arr.get(index)] - 1, arr.get(index))
-        count[arr.get(index)] -= 1
-    return sorted_array
+    # Find the maximum value in the array
+    max_val = float('-inf')
+    for i in range(arr.length()):
+        if arr[i] > max_val:
+            max_val = arr[i]
 
-    pass
+    # Initialize the count array with 0s
+    count = StaticArray(max_val + 1)
+    for i in range(count.length()):
+        count[i] = 0
+
+    # Count the number of times each value appears in the array
+    for i in range(arr.length()):
+        count[arr[i]] += 1
+
+    # Compute the prefix sum of the count array
+    for i in range(1, count.length()):
+        count[i] += count[i - 1]
+
+    # Initialize the result array with 0s
+    result = StaticArray(arr.length())
+    for i in range(result.length()):
+        result[i] = 0
+
+    # Place the elements in the result array in non-ascending order
+    for i in range(arr.length() - 1, -1, -1):
+        result[count[arr[i]] - 1] = arr[i]
+        count[arr[i]] -= 1
+
+    return result
 
 
 # ------------------- PROBLEM 10 - SORTED SQUARES ---------------------------
@@ -155,6 +182,8 @@ def sorted_squares(arr: StaticArray) -> StaticArray:  # importsd not descending 
             r -= 1
     return squares_doubled
     pass
+
+
 
 # ------------------- BASIC TESTING -----------------------------------------
 
