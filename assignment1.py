@@ -93,17 +93,38 @@ def sa_range(start: int, end: int) -> StaticArray:
 # ------------------- PROBLEM 6 - IS_SORTED ---------------------------------
 
 def is_sorted(arr: StaticArray) -> int:
-    descending = False  # Sorts array based on given ending value -1 or 1
-    ascending = False
-    for index in range(1, arr.length()):
-        if arr.get(index) < arr.get(index - 1):
-            ascending = True
-        if arr.get(index) > arr.get(index - 1):
-            descending = True  # with also 0 being an otherwise value
-        if not ascending and not descending:
+    """
+    Returns an integer that describes whether the StaticArray is sorted.
+    Returns:
+        1 if the array is sorted in strictly ascending order.
+        -1 if the array is sorted in strictly descending order.
+        0 otherwise.
+    """
+    n = arr.length()
+    if n == 1:  # single-element array is considered sorted in strictly ascending order
+        return 1
+
+    is_asc = None  # flag to check if the array is in strictly ascending order
+    is_desc = None  # flag to check if the array is in strictly descending order
+
+    for i in range(1, n):
+        if arr[i] > arr[i-1]:
+            is_asc = True
+            if is_desc is not None:  # if the array was already in strictly descending order
+                return 0
+        elif arr[i] < arr[i-1]:
+            is_desc = True
+            if is_asc is not None:  # if the array was already in strictly ascending order
+                return 0
+        else:  # equal elements are not allowed in strictly ascending/descending order
             return 0
-    return -1 if ascending else 1
-    pass
+
+    if is_asc and not is_desc:
+        return 1
+    elif is_desc and not is_asc:
+        return -1
+    else:
+        return 0
 
 
 # ------------------- PROBLEM 7 - FIND_MODE -----------------------------------
