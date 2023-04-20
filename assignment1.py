@@ -1,9 +1,9 @@
-# Name: Brendan Cahill
-# OSU Email: cahillbr@oregonstate.edu
-# Course:       CS261 - Data Structures
-# Assignment: 1
-# Due Date: 1/30/23
-# Description: introduction to python assignments with array
+# Name:
+# OSU Email:
+# Course: CS261 - Data Structures
+# Assignment:
+# Due Date:
+# Description:
 
 
 import random
@@ -12,153 +12,198 @@ from static_array import *
 
 # ------------------- PROBLEM 1 - MIN_MAX -----------------------------------
 
-def min_max(arr: StaticArray) -> (int, int):
-    minimum = arr.get(0)  # assigning values of arraw both min and max
-    maximum = arr.get(0)
-    for i in range(arr.length()):
-        if arr.get(i) < minimum:  # scenarios for values if either is less than or grater than min or max value
-            minimum = arr.get(i)
-        elif arr.get(i) > maximum:
-            maximum = arr.get(i)
-    return (minimum, maximum)
+def min_max(arr: StaticArray) -> tuple:
+    # Initialize min and max to the first element of the array
+    min_val = max_val = arr.get(0)
 
+    # Loop through the rest of the array, updating min and max as necessary
+    for i in range(1, arr.length()):
+        val = arr.get(i)
+        if val < min_val:
+            min_val = val
+        elif val > max_val:
+            max_val = val
 
-pass
+    # Return min and max as a tuple
+    return (min_val, max_val)
 
 
 # ------------------- PROBLEM 2 - FIZZ_BUZZ ---------------------------------
 
 def fizz_buzz(arr: StaticArray) -> StaticArray:
-    new_arr = StaticArray(arr.length())
-    for i in range(arr.length()):
-        if arr.get(i) % 3 == 0 and arr.get(i) % 5 == 0:  # conditionals on which value is divisble by 3 or 5
-            new_arr.set(i, "fizzbuzz")  # also with conditional if 3 or 5 are multiples
-        elif arr.get(i) % 5 == 0:
-            new_arr.set(i, "buzz")
-        elif arr.get(i) % 3 == 0:
-            new_arr.set(i, "fizz")
+    n = len(arr)
+    result_arr = StaticArray(n)
+    for i in range(n):
+        if arr[i] % 3 == 0 and arr[i] % 5 == 0:
+            result_arr[i] = "fizzbuzz"
+        elif arr[i] % 3 == 0:
+            result_arr[i] = "fizz"
+        elif arr[i] % 5 == 0:
+            result_arr[i] = "buzz"
         else:
-            new_arr.set(i, arr.get(i))
-    return new_arr
-
-    pass
-
+            result_arr[i] = arr[i]
+    return result_arr
 
 # ------------------- PROBLEM 3 - REVERSE -----------------------------------
 
 def reverse(arr: StaticArray) -> None:
-    for index in range(arr.length() // 2):  # reverse order of elements in array
-        temp = arr.get(index)
-        arr.set(index, arr.get(arr.length() - 1 - index))
-        arr.set(arr.length() - 1 - index, temp)
-    pass
+    left = 0
+    right = len(arr) - 1
+    while left < right:
+        arr[left], arr[right] = arr[right], arr[left]
+        left += 1
+        right -= 1
 
 
 # ------------------- PROBLEM 4 - ROTATE ------------------------------------
 
 def rotate(arr: StaticArray, steps: int) -> StaticArray:
-    set_arr = StaticArray(arr.length())  # function receievs the given paramters of shifting for direction
-    for index in range(arr.length()):  # right = positive and vice versa
-        new_index = (index + steps) % arr.length()
-        set_arr.set(new_index, arr.get(index))
-    return set_arr
-
-    pass
+    n = len(arr)
+    if n == 1 or steps % n == 0:
+        return arr.copy()
+    steps = steps % n
+    result = StaticArray(n)
+    for i in range(n):
+        j = (i + steps) % n
+        result[j] = arr[i]
+    return result
 
 
 # ------------------- PROBLEM 5 - SA_RANGE ----------------------------------
 
-def sa_range(start: int, end: int) -> StaticArray:  # receives both start and end integers
-    arr = abs(StaticArray(end - start + 1))
-    for index, value in enumerate(range(start, end + 1)):
-        arr.set(index, value)
-    return arr  # returns values of consecutive integers
-
-    pass
+def sa_range(start: int, end: int) -> StaticArray:
+    arr = StaticArray(end - start + 1)
+    for i in range(len(arr)):
+        arr[i] = start + i
+    return arr
 
 
 # ------------------- PROBLEM 6 - IS_SORTED ---------------------------------
 
 def is_sorted(arr: StaticArray) -> int:
-    descending = False  # Sorts array based on given ending value -1 or 1
-    ascending = False
-    for index in range(1, arr.length()):
-        if arr.get(index) < arr.get(index - 1):
-            ascending = True
-        if arr.get(index) > arr.get(index - 1):
-            descending = True  # with also 0 being an otherwise value
-        if not ascending and not descending:
-            return 0
-    return -1 if ascending else 1
-    pass
+    n = len(arr)
+    if n == 1:
+        return 1
+
+    ascending = True
+    descending = True
+
+    for i in range(1, n):
+        if arr[i] < arr[i - 1]:
+            ascending = False
+        if arr[i] > arr[i - 1]:
+            descending = False
+
+    if ascending:
+        return 1
+    elif descending:
+        return -1
+    else:
+        return 0
 
 
 # ------------------- PROBLEM 7 - FIND_MODE -----------------------------------
 
-def find_mode(arr: StaticArray) -> (int, int):
-    current_count = 1  # orders static array values in nondescending or ascending
-    maximum_count = 1
-    mode = arr.get(0)
-    for index in range(1, arr.length()):
-        if arr.get(index) == arr.get(index - 1):
-            current_count += 1
-            if current_count > maximum_count:
-                maximum_count = current_count
-                mode = arr.get(index)
-        else:  # output of array
-            current_count = 1
-    return mode, maximum_count
-    pass
+def find_mode(arr: StaticArray) -> tuple:
+    mode = arr[0]
+    mode_freq = 1
+    curr = arr[0]
+    curr_freq = 1
+
+    for i in range(1, len(arr)):
+        if arr[i] == curr:
+            curr_freq += 1
+        else:
+            if curr_freq > mode_freq:
+                mode = curr
+                mode_freq = curr_freq
+            curr = arr[i]
+            curr_freq = 1
+
+    # Check the last value
+    if curr_freq > mode_freq:
+        mode = curr
+        mode_freq = curr_freq
+
+    return mode, mode_freq
 
 
 # ------------------- PROBLEM 8 - REMOVE_DUPLICATES -------------------------
 
 def remove_duplicates(arr: StaticArray) -> StaticArray:
-    unique = StaticArray(1)  # orders static array values in nondescending or ascending
-    unique.set(0, arr.get(0))
+    n = len(arr)
+    if n == 1:
+        return arr.copy()
 
+    new_arr = StaticArray(n, arr[0].__class__)
+    new_arr[0] = arr[0]
+    j = 1
+
+    for i in range(1, n):
+        if arr[i] != arr[i-1]:
+            new_arr[j] = arr[i]
+            j += 1
+
+    return new_arr[:j]
 
 
 # ------------------- PROBLEM 9 - COUNT_SORT --------------------------------
 
 def count_sort(arr: StaticArray) -> StaticArray:
-    maximum_value = arr.get(0)
-    for index in range(1, arr.length()):  # returns new staic array from given one
-        if arr.get(index) > maximum_value:
-            maximum_value = arr.get(index)
-    count =   (maximum_value + 1) * arr.get(0)
-    for index in range(arr.length()):
-        count[arr.get(index)] += 1
-    for index in range(1, maximum_value + 1):  # sorts in non ascewnding order using count agl
-        count[index] += count[index - 1]
-    sorted_array = StaticArray(arr.length())
-    for index in range(arr.length() - 1, -1, -1):
-        sorted_array.set(count[arr.get(index)] - 1, arr.get(index))
-        count[arr.get(index)] -= 1
-    return sorted_array
+    # Find the range of values in the array
+    min_val = max_val = arr[0]
+    for i in range(1, len(arr)):
+        if arr[i] < min_val:
+            min_val = arr[i]
+        elif arr[i] > max_val:
+            max_val = arr[i]
 
-    pass
+    # Create a count array to store the number of occurrences of each value
+    count = [0] * (max_val - min_val + 1)
+    for i in range(len(arr)):
+        count[arr[i] - min_val] += 1
+
+    # Modify count array to store the cumulative sum of occurrences
+    for i in range(1, len(count)):
+        count[i] += count[i-1]
+
+    # Create the output array and fill it with the sorted elements
+    output = StaticArray(len(arr))
+    for i in range(len(arr)-1, -1, -1):
+        output[count[arr[i]-min_val]-1] = arr[i]
+        count[arr[i]-min_val] -= 1
+
+    return output
 
 
-# ------------------- PROBLEM 10 - SORTED SQUARES ---------------------------
+# ------------------- PROBLEM 10 - TRANSFORM_STRING ---------------------------
 
-def sorted_squares(arr: StaticArray) -> StaticArray:  # importsd not descending elements
-    squares_doubled = StaticArray(arr.length())
-    val, r = 0, arr.length() - 1
-    for index in range(arr.length() - 1, -1,
-                       -1):  # returns new staic with sqare root values, does not modify original array
-        if abs(arr.get(val)) > abs(arr.get(r)):
-            squares_doubled.set(index, arr.get(val) ** 2)
-            val += 1
+def transform_string(source: str, s1: str, s2: str) -> str:
+    # Create a dictionary to map characters in s1 to characters in s2
+    mapping = {s1[i]: s2[i] for i in range(len(s1))}
+
+    # Create a list to hold the transformed characters
+    transformed = []
+
+    # Process the source string one character at a time
+    for c in source:
+        if c in mapping:
+            # Replace the character using the mapping
+            transformed.append(mapping[c])
+        elif c.isupper():
+            transformed.append(' ')
+        elif c.islower():
+            transformed.append('#')
+        elif c.isdigit():
+            transformed.append('!')
         else:
-            squares_doubled.set(index, arr.get(r) ** 2)
-            r -= 1
-    return squares_doubled
-    pass
+            transformed.append('=')
+
+    # Return the transformed string
+    return ''.join(transformed)
 
 
 # ------------------- BASIC TESTING -----------------------------------------
-
 
 if __name__ == "__main__":
 
@@ -277,7 +322,6 @@ if __name__ == "__main__":
         arr = StaticArray(len(case))
         for i, value in enumerate(case):
             arr[i] = value
-
         result = find_mode(arr)
         if result:
             print(f"{arr}\nMode: {result[0]}, Frequency: {result[1]}\n")
@@ -325,26 +369,31 @@ if __name__ == "__main__":
     result = count_sort(arr)
     print(f'Finished sorting large array of {array_size} elements')
 
-    print('\n# sorted_squares example 1')
-    test_cases = (
-        [1, 2, 3, 4, 5],
-        [-5, -4, -3, -2, -1, 0],
-        [-3, -2, -2, 0, 1, 2, 3],
+    print('\n# transform_string example 1\n')
+    original = (
+        '#     #  =====  !      =====  =====  #     #  =====',
+        '#  #  #  !      !      !      !   !  ##   ##  !    ',
+        '# # # #  !===   !      !      !   !  # # # #  !=== ',
+        '##   ##  !      !      !      !   !  #  #  #  !    ',
+        '#     #  =====  =====  =====  =====  #     #  =====',
+        '                                                   ',
+        '         TTTTT OOOOO      22222   66666    1       ',
+        '           T   O   O          2   6       11       ',
+        '           T   O   O       222    66666    1       ',
+        '           T   O   O      2       6   6    1       ',
+        '           T   OOOOO      22222   66666   111      ',
     )
-    for case in test_cases:
-        arr = StaticArray(len(case))
-        for i, value in enumerate(sorted(case)):
-            arr[i] = value
-        print(arr)
-        result = sorted_squares(arr)
-        print(result)
+    test_cases = ('eMKCPVkRI%~}+$GW9EOQNMI!_%{#ED}#=-~WJbFNWSQqDO-..@}',
+                  'dGAqJLcNC0YFJQEB5JJKETQ0QOODKF8EYX7BGdzAACmrSL0PVKC',
+                  'aLiAnVhSV9}_+QOD3YSIYPR4MCKYUF9QUV9TVvNdFuGqVU4$/%D',
+                  'zmRJWfoKC5RDKVYO3PWMATC7BEIIVX9LJR7FKtDXxXLpFG7PESX',
+                  'hFKGVErCS$**!<OS<_/.>NR*)<<+IR!,=%?OAiPQJILzMI_#[+}',
+                  'EOQUQJLBQLDLAVQSWERAGGAOKUUKOPUWLQSKJNECCPRRXGAUABN',
+                  'WGBKTQSGVHHHHHTZZZZZMQKBLC66666NNR11111OKUN2KTGYUIB',
+                  'YFOWAOYLWGQHJQXZAUPZPNUCEJABRR6MYR1JASNOTF22MAAGTVA',
+                  'GNLXFPEPMYGHQQGZGEPZXGJVEYE666UKNE11111WGNW2NVLCIOK',
+                  'VTABNCKEFTJHXATZTYGZVLXLAB6JVGRATY1GEY1PGCO2QFPRUAP',
+                  'UTCKYKGJBWMHPYGZZZZZWOKQTM66666GLA11111CPF222RUPCJT')
 
-    print('\n# sorted_squares example 2')
-    array_size = 5_000_000
-    case = [random.randint(-10 ** 9, 10 ** 9) for _ in range(array_size)]
-    arr = StaticArray(len(case))
-    for i, value in enumerate(sorted(case)):
-        arr[i] = value
-    print(f'Started sorting large array of {array_size} elements')
-    result = sorted_squares(arr)
-    print(f'Finished sorting large array of {array_size} elements')
+    for case in test_cases:
+        print(transform_string(case, '612HZ', '261TO'))
