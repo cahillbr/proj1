@@ -1,9 +1,4 @@
-# Name: Brendan Cahill
-# OSU Email: cahillbr@oregonstate.edu
-# Course:       CS261 - Data Structures
-# Assignment: 1
-# Due Date: 1/30/23
-# Description: introduction to python assignments with array
+
 
 
 import random
@@ -23,7 +18,7 @@ def min_max(arr: StaticArray) -> (int, int):
     return (minimum, maximum)
 
 
-pass
+
 
 
 # ------------------- PROBLEM 2 - FIZZ_BUZZ ---------------------------------
@@ -41,7 +36,6 @@ def fizz_buzz(arr: StaticArray) -> StaticArray:
             new_arr.set(i, arr.get(i))
     return new_arr
 
-    pass
 
 
 # ------------------- PROBLEM 3 - REVERSE -----------------------------------
@@ -51,7 +45,7 @@ def reverse(arr: StaticArray) -> None:
         temp = arr.get(index)
         arr.set(index, arr.get(arr.length() - 1 - index))
         arr.set(arr.length() - 1 - index, temp)
-    pass
+
 
 
 # ------------------- PROBLEM 4 - ROTATE ------------------------------------
@@ -77,17 +71,17 @@ def rotate(arr: StaticArray, steps: int) -> StaticArray:
 # ------------------- PROBLEM 5 - SA_RANGE ----------------------------------
 
 def sa_range(start: int, end: int) -> StaticArray:
-    # Calculate the size of the StaticArray
-    size = abs(end - start) + 1
-
-    # Create a new StaticArray object
+    """
+    Returns a StaticArray that contains all the consecutive integers between
+    start and end (inclusive).
+    """
+    size = end - start + 1
     arr = StaticArray(size)
-
-    # Set the values of the StaticArray
     for i in range(size):
         arr[i] = start + i
-
     return arr
+
+
 
 
 # ------------------- PROBLEM 6 - IS_SORTED ---------------------------------
@@ -174,52 +168,52 @@ def remove_duplicates(arr: StaticArray) -> StaticArray:
 
 def count_sort(arr: StaticArray) -> StaticArray:
     # Find the maximum value in the array
-    max_val = float('-inf')
-    for i in range(arr.length()):
+    max_val = arr[0]
+    for i in range(1, arr.length()):
         if arr[i] > max_val:
             max_val = arr[i]
 
-    # Initialize the count array with 0s
-    count = StaticArray(max_val + 1)
-    for i in range(count.length()):
-        count[i] = 0
-
-    # Count the number of times each value appears in the array
+    # Find the count of each value
+    counts = StaticArray(max_val + 1)
     for i in range(arr.length()):
-        count[arr[i]] += 1
+        counts[arr[i]] += 1
 
-    # Compute the prefix sum of the count array
-    for i in range(1, count.length()):
-        count[i] += count[i - 1]
+    # Calculate the starting index of each value in the sorted array
+    starts = StaticArray(max_val + 1)
+    current_start = 0
+    for i in range(counts.length()):
+        starts[i] = current_start
+        current_start += counts[i]
 
-    # Initialize the result array with 0s
-    result = StaticArray(arr.length())
-    for i in range(result.length()):
-        result[i] = 0
+    # Copy the values into the sorted array
+    sorted_arr = StaticArray(arr.length())
+    for i in range(arr.length()):
+        value = arr[i]
+        index = starts[value]
+        sorted_arr[index] = value
+        starts[value] += 1
 
-    # Place the elements in the result array in non-ascending order
-    for i in range(arr.length() - 1, -1, -1):
-        result[count[arr[i]] - 1] = arr[i]
-        count[arr[i]] -= 1
+    return sorted_arr
 
-    return result
 
 
 # ------------------- PROBLEM 10 - SORTED SQUARES ---------------------------
 
-def sorted_squares(arr: StaticArray) -> StaticArray:  # importsd not descending elements
-    squares_doubled = StaticArray(arr.length())
-    val, r = 0, arr.length() - 1
-    for index in range(arr.length() - 1, -1,
-                       -1):  # returns new staic with sqare root values, does not modify original array
-        if abs(arr.get(val)) > abs(arr.get(r)):
-            squares_doubled.set(index, arr.get(val) ** 2)
-            val += 1
+def transform_string(source: str, s1: str, s2: str) -> str:
+    res = []
+    for char in source:
+        if char in s1:
+            res.append(s2[s1.index(char)])
+        elif char.isupper():
+            res.append(' ')
+        elif char.islower():
+            res.append('#')
+        elif char.isdigit():
+            res.append('!')
         else:
-            squares_doubled.set(index, arr.get(r) ** 2)
-            r -= 1
-    return squares_doubled
-    pass
+            res.append('=')
+    return ''.join(res)
+
 
 
 
