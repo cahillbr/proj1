@@ -1,3 +1,9 @@
+# Name:Brendan Cahill
+# OSU Email:cahillbr@oregonstate.edu
+# Course: CS261 - Data Structures
+# Assignment: 1
+# Due Date: 4/24/2024
+# Description: python review methods
 
 
 import random
