@@ -207,18 +207,25 @@ def count_sort(arr: StaticArray) -> StaticArray:
             max_val = val
 
     # Create a count array to tabulate the occurrences of each element in the input array
-    count = [0] * (max_val - min_val + 1)
+    count_size = max_val - min_val + 1
+    count = StaticArray(count_size)
+
+    # Initialize the count array with zeros
+    for i in range(count_size):
+        count.set(i, 0)
+
+    # Update the count array with occurrences of elements in the input array
     for i in range(arr.length()):
         val = arr.get(i)
-        count[val - min_val] += 1
+        count.set(val - min_val, count.get(val - min_val) + 1)
 
     # Create a new StaticArray to store the sorted result
     sorted_arr = StaticArray(arr.length())
 
     # Iterate through the count array to generate the sorted array
     index = 0
-    for i in range(len(count) - 1, -1, -1):
-        freq = count[i]
+    for i in range(count_size - 1, -1, -1):
+        freq = count.get(i)
         if freq > 0:
             val = i + min_val
             for j in range(freq):
@@ -236,19 +243,23 @@ def transform_string(source: str, s1: str, s2: str) -> str:
     Transforms a given source string based on two mapping strings (s1 and s2) and returns the transformed string.
     Returns the transformed string where characters from the source string are replaced based on s1 and s2.
     """
-    res = []
-    for char in source:
+    result = StaticArray(len(source)) # Create a StaticArray object with the same length as the source string
+    for i in range(len(source)):
+        char = source[i]
         if char in s1:
-            res.append(s2[s1.index(char)])
+            result.set(i, s2[s1.index(char)]) # Replace character using s1 and s2
         elif char.isupper():
-            res.append(' ')
+            result.set(i, ' ') # Replace uppercase characters with a space
         elif char.islower():
-            res.append('#')
+            result.set(i, '#') # Replace lowercase characters with a '#'
         elif char.isdigit():
-            res.append('!')
+            result.set(i, '!') # Replace digits with an '!'
         else:
-            res.append('=')
-    return ''.join(res)
+            result.set(i, '=') # Replace all other characters with an '='
+    transformed_str = ''
+    for i in range(len(source)):
+        transformed_str += result.get(i) # Build the transformed string by concatenating characters from StaticArray
+    return transformed_str
 
 
 
