@@ -1,6 +1,5 @@
 
 
-
 import random
 from static_array import *
 
@@ -8,6 +7,11 @@ from static_array import *
 # ------------------- PROBLEM 1 - MIN_MAX -----------------------------------
 
 def min_max(arr: StaticArray) -> (int, int):
+    """
+    Computes the minimum and maximum values in a StaticArray.
+    Returns a tuple containing two integers representing the minimum and maximum values
+    in the input StaticArray, respectively.
+    """
     minimum = arr.get(0)  # assigning values of arraw both min and max
     maximum = arr.get(0)
     for i in range(arr.length()):
@@ -19,11 +23,16 @@ def min_max(arr: StaticArray) -> (int, int):
 
 
 
-
-
 # ------------------- PROBLEM 2 - FIZZ_BUZZ ---------------------------------
 
 def fizz_buzz(arr: StaticArray) -> StaticArray:
+    """
+    Transforms the input StaticArray by replacing numbers divisible by 3 with "fizz",
+    numbers divisible by 5 with "buzz", and numbers divisible by both 3 and 5 with "fizzbuzz".
+    Other numbers in the input StaticArray remain unchanged.
+    Returns a new StaticArray with "fizz", "buzz", "fizzbuzz", or the original numbers,
+    depending on their divisibility by 3 and/or 5 in the input StaticArray.
+    """
     new_arr = StaticArray(arr.length())
     for i in range(arr.length()):
         if arr.get(i) % 3 == 0 and arr.get(i) % 5 == 0:  # conditionals on which value is divisble by 3 or 5
@@ -41,6 +50,10 @@ def fizz_buzz(arr: StaticArray) -> StaticArray:
 # ------------------- PROBLEM 3 - REVERSE -----------------------------------
 
 def reverse(arr: StaticArray) -> None:
+    """
+    Reverses the elements in the input StaticArray in-place.
+    Returns None
+    """
     for index in range(arr.length() // 2):  # reverse order of elements in array
         temp = arr.get(index)
         arr.set(index, arr.get(arr.length() - 1 - index))
@@ -68,20 +81,23 @@ def rotate(arr: StaticArray, steps: int) -> StaticArray:
     return new_arr
 
 
+
 # ------------------- PROBLEM 5 - SA_RANGE ----------------------------------
 
 def sa_range(start: int, end: int) -> StaticArray:
     """
-    Returns a StaticArray that contains all the consecutive integers between
-    start and end (inclusive).
+    Create a StaticArray containing all consecutive integers between start and end (inclusive).
+    Returns a StaticArray containing all consecutive integers between start and end.
     """
-    size = end - start + 1
-    arr = StaticArray(size)
+    size = abs(end - start) + 1
+    sa = StaticArray(size)
+
+    step = -1 if start > end else 1
     for i in range(size):
-        arr[i] = start + i
-    return arr
+        sa.set(i, start)
+        start += step
 
-
+    return sa
 
 
 # ------------------- PROBLEM 6 - IS_SORTED ---------------------------------
@@ -124,6 +140,11 @@ def is_sorted(arr: StaticArray) -> int:
 # ------------------- PROBLEM 7 - FIND_MODE -----------------------------------
 
 def find_mode(arr: StaticArray) -> (int, int):
+    """
+    Finds the mode (most frequently occurring element) in the input StaticArray.
+    Returns a tuple containing the mode (most frequently occurring element) as the first element
+    and its frequency (count of occurrences) as the second element.
+    """
     current_count = 1  # orders static array values in nondescending or ascending
     maximum_count = 1
     mode = arr.get(0)
@@ -136,12 +157,16 @@ def find_mode(arr: StaticArray) -> (int, int):
         else:  # output of array
             current_count = 1
     return mode, maximum_count
-    pass
+
 
 
 # ------------------- PROBLEM 8 - REMOVE_DUPLICATES -------------------------
 
 def remove_duplicates(arr: StaticArray) -> StaticArray:
+    """
+    Removes duplicates from the input StaticArray and returns a new StaticArray with only unique elements.
+    Returns a new StaticArray containing only unique elements from the input array.
+    """
     # Create a new StaticArray object to store unique elements
     unique_arr = StaticArray(arr.length())
 
@@ -167,31 +192,38 @@ def remove_duplicates(arr: StaticArray) -> StaticArray:
 # ------------------- PROBLEM 9 - COUNT_SORT --------------------------------
 
 def count_sort(arr: StaticArray) -> StaticArray:
-    # Find the maximum value in the array
-    max_val = arr[0]
-    for i in range(1, arr.length()):
-        if arr[i] > max_val:
-            max_val = arr[i]
-
-    # Find the count of each value
-    counts = StaticArray(max_val + 1)
+    """
+    Sorts a StaticArray in non-ascending order using the count sort algorithm
+    Returns a new StaticArray with the same content sorted in non-ascending order.
+    """
+    # Find the range of numbers in the input array
+    min_val = float('inf')
+    max_val = float('-inf')
     for i in range(arr.length()):
-        counts[arr[i]] += 1
+        val = arr.get(i)
+        if val < min_val:
+            min_val = val
+        if val > max_val:
+            max_val = val
 
-    # Calculate the starting index of each value in the sorted array
-    starts = StaticArray(max_val + 1)
-    current_start = 0
-    for i in range(counts.length()):
-        starts[i] = current_start
-        current_start += counts[i]
+    # Create a count array to tabulate the occurrences of each element in the input array
+    count = [0] * (max_val - min_val + 1)
+    for i in range(arr.length()):
+        val = arr.get(i)
+        count[val - min_val] += 1
 
-    # Copy the values into the sorted array
+    # Create a new StaticArray to store the sorted result
     sorted_arr = StaticArray(arr.length())
-    for i in range(arr.length()):
-        value = arr[i]
-        index = starts[value]
-        sorted_arr[index] = value
-        starts[value] += 1
+
+    # Iterate through the count array to generate the sorted array
+    index = 0
+    for i in range(len(count) - 1, -1, -1):
+        freq = count[i]
+        if freq > 0:
+            val = i + min_val
+            for j in range(freq):
+                sorted_arr.set(index, val)
+                index += 1
 
     return sorted_arr
 
@@ -200,6 +232,10 @@ def count_sort(arr: StaticArray) -> StaticArray:
 # ------------------- PROBLEM 10 - SORTED SQUARES ---------------------------
 
 def transform_string(source: str, s1: str, s2: str) -> str:
+    """
+    Transforms a given source string based on two mapping strings (s1 and s2) and returns the transformed string.
+    Returns the transformed string where characters from the source string are replaced based on s1 and s2.
+    """
     res = []
     for char in source:
         if char in s1:
